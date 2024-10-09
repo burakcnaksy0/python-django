@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eklenen Filmler</title>
+    <style>
+        button {
+            padding: 10px 15px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button a {
+            color: white;
+            text-decoration: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .button-container {
+            text-align: center; /* Center the button */
+            margin-top: 20px; /* Optional: add some space above the button */
+        }
+    </style>
+</head>
+<body>
+    <h1>Eklenen Filmler</h1>
+
+    <ul>
+        {% for movie in movie_list %}
+        <li style="font-size: 120%">
+            {{ movie.name }} - - ({{ movie.year }}) - - {{ movie.topic }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="button-container">
+        <button>
+            <a href="{% url 'movielogin' %}">Geri</a>
+        </button>
+    </div>
+</body>
+</html>
