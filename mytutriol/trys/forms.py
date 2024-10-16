@@ -1,4 +1,5 @@
 from django import forms
+from .models import *
 
 
 class MyForm(forms.Form):
@@ -28,3 +29,10 @@ class Movie(forms.Form):
     year = forms.DateField(label="Year")
     topic = forms.CharField(label="Topic")
     message = forms.CharField(label="Message")
+    image = forms.ImageField(label="İmage")
+
+
+class MovieForm(forms.ModelForm):
+    class Meta:
+        model = MovieApp
+        fields = ["name", "year", "topic", "message", "image"]

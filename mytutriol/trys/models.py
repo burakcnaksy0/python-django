@@ -158,7 +158,8 @@ class MovieApp(models.Model):
     name = models.CharField(max_length=100)
     year = models.DateField(max_length=100)
     topic = models.CharField(max_length=100)
-    message = models.CharField(max_length=100)
+    message = models.CharField(max_length=1000)
+    image = models.ImageField(upload_to="images/", null=True, blank=True)
 
     def __str__(self):
         return self.name

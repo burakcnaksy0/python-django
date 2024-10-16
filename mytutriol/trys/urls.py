@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("testing/", views.testing),
@@ -27,7 +29,13 @@ urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("applogin/", views.AppLogin, name="applogin"),
     path("appregister/", views.AppRegister, name="appregister"),
+    
     path("movielogin/", views.movie_app, name="movielogin"),
-    path("movieregister/", views.movie_register, name="movieregister"),
+    path("movie_register/", views.movie_register, name="movie_register"),
     path("movielist/", views.movielist, name="movielist"),
-]
+    path("movies/", views.movie_list, name="movie_list"),
+    path("movie/update/<int:movie_id>/", views.update_movie, name="update_movie"),
+    path("movies/delete/<int:movie_id>/", views.delete_movie, name="delete"),
+    path("movies/detail/<int:movie_id>/", views.detail_movie, name="detail"),
+    
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

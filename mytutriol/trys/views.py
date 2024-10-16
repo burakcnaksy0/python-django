@@ -1,43 +1,108 @@
 from django.forms import forms
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http.response import HttpResponse
 from django.template import loader
 from .models import *
 from .forms import *
 
 
-def movie_app(request):
+def add_photo(request):
+    print("add_photo")
+    # movie = get_object_or_404(MovieApp, id=movie_id)
     if request.method == "POST":
-        form = Movie(request.POST)
+        form = MovieForm(request.POST, request.FILES)  # MovieForm kullan
+        if form.is_valid():
+            form.save()
+            return redirect("movielist")  # Güncelleme sonrası yönlendirme
+    else:
+        form = MovieForm()
+
+    return render(request, "addphoto.html", {"form": form})
+
+
+def detail_movie(request, movie_id):
+    movie = get_object_or_404(MovieApp, id=movie_id)
+    if request.method == "POST":
+        movie.objects.get(id=movie_id)
+        return redirect("movielist")
+
+    return render(request, "detail.html", {"movie": movie})
+
+
+def delete_movie(request, movie_id):
+    # MovieApp modelinden silmek istediğiniz nesneyi al
+    movie = get_object_or_404(MovieApp, id=movie_id)
+
+    if request.method == "POST":
+        # Nesneyi sil
+        movie.delete()
+        return redirect("movielist")  # Silme sonrası yönlendirme
+
+    # Eğer POST değilse, silme onay sayfasını göster
+    return render(request, "delete.html", {"movie": movie})
+
+
+def update_movie(request, movie_id):
+    movie = get_object_or_404(MovieApp, id=movie_id)
+
+    if request.method == "POST":
+        form = MovieForm(request.POST, request.FILES ,instance=movie)  # MovieForm kullan
+        if form.is_valid():
+            form.save()
+            return redirect("movielist")  # Güncelleme sonrası yönlendirme
+    else:
+        form = MovieForm(instance=movie)  # MovieForm kullan
+
+    return render(request, "update_movie.html", {"form": form, "movie": movie})
+
+
+def movie_list(request):
+    movie_list = MovieApp.objects.all()
+    return render(request, "movielist1.html", {"movie_list": movie_list})
+
+
+def movie_app(request):
+
+    if request.method == "POST":
+        form = MovieForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data["name"]
             year = form.cleaned_data["year"]
             topic = form.cleaned_data["topic"]
             message = form.cleaned_data["message"]
+            image = form.cleaned_data["image"]  
 
-            movie = MovieApp(name=name, year=year, topic=topic, message=message)
+            movie = MovieApp(
+                name=name, year=year, topic=topic, message=message, image=image
+            )
             movie.save()
             return redirect("movie_register")
         else:
-            return render(request, "movielogin.html", {"form": form})
+            return render(request, "invalıd.html", {"form": form})
 
     else:
-        form = Movie()
+        form = MovieForm()
     return render(request, "movielogin.html", {"form": form})
 
 
 def movie_register(request):
     movie_list = MovieApp.objects.all()
-    return render(request, "movieregister.html", {"movie_list": movie_list})
+    number = len(movie_list)
+    return render(
+        request, "movieregister.html", {"movie_list": movie_list, "number": number}
+    )
 
 
 def movielist(request):
     movie_list = MovieApp.objects.all()
-    return render(request, "movielist.html", {"movie_list": movie_list})
+    number = len(movie_list)
+    return render(
+        request, "movielist.html", {"movie_list": movie_list, "number": number}
+    )
 
 
 def AppRegister(request):
-    app_list = App.objects.all
+    app_list = App.objects.all()
     return render(request, "appregister.html", {"app_list": app_list})
 
 
